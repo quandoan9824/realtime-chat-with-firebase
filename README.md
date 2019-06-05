@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ytfirebasevuechat
 
 ## Project setup
@@ -27,3 +28,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# git-demo
+demo git
+>>>>>>> eac72208cdc94b10e133ccd44ec9d89064d9ece8
