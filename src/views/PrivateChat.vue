@@ -92,13 +92,14 @@
         <div class="mesgs">
           <div class="msg_history">
             <div v-for="message in messages" class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-              <div class="received_msg">
+              <!-- <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div> -->
+              <div :class="[message.author===authUser.displayName ? 'sent_msg':'received_msg']">
                 <div class="received_withd_msg">
                   <p>{{message.message}}</p>
-                  <span class="time_date">{{message.createdAt}}|{{message.author}}</span></div>
+                  <span class="time_date">{{message.author}}</span></div>
               </div>
             </div>
+
           <div class="type_msg">
             <div class="input_msg_write">
               <input @keyup.enter="saveMessage" v-model="message" type="text" class="write_msg" placeholder="Type a message" />
@@ -118,6 +119,7 @@
 <script>
 
 import firebase from 'firebase'
+import { setTimeout } from 'timers';
 
 export default {
   data(){
@@ -128,13 +130,19 @@ export default {
       }
   },
   
-  methods: {  
+  methods: {
+        scrollToBottom(){
+          let box=document.querySelector('.msg_history');
+          box.scrollTop=box.scrollHeight;
+        },
         saveMessage(){
             //Save to firestore
             db.collection('chat').add({
                 message: this.message,
                 author: this.authUser.displayName,
                 createdAt: new Date()
+            }).then(()=>{
+              this.scrollToBottom()
             })
 
             this.message=null
@@ -148,13 +156,17 @@ export default {
             });
 
             this.messages=allMessage
+
+            setTimeout(()=>{
+              this.scrollToBottom();
+            }, 1000)
           })
         }
   },
   
   created(){
 
-    firebase.auth.onAuthStateChanged(user=>{
+    firebase.auth().onAuthStateChanged(user=>{
       if(user){
         this.authUser=user
       }else{
@@ -278,7 +290,7 @@ img{ max-width:100%;}
 }
 
  .sent_msg p {
-  background: #05728f none repeat scroll 0 0;
+  background: red none repeat scroll 0 0;
   border-radius: 3px;
   font-size: 14px;
   margin: 0; color:#fff;
@@ -318,4 +330,7 @@ img{ max-width:100%;}
   height: 516px;
   overflow-y: auto;
 }
+
+
+
 </style>
